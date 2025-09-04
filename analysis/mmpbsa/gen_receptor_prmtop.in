@@ -1,0 +1,7 @@
+# Change the following topology filename to match your case
+parm XXX_nowat.prmtop
+
+# Replace YYY with the residue name or residue number of the ligand
+parmstrip :YYY
+
+parmwrite out receptor.prmtop

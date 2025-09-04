@@ -1,0 +1,11 @@
+# Change the following topology filename to match your case
+parm XXX_nowat.prmtop
+
+trajin ../../production.[0-9][0-9][0-9].mdcrd 1 last 100
+
+# Replace XXX with the last residue number of the receptor
+center :1-XXX
+
+image center familiar
+trajout complex.nc
+go

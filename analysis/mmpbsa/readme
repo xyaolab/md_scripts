@@ -1,0 +1,116 @@
+## 1. Generate a compressed .nc trajectory file for the complex (receptor+ligand, or holo)
+
+This step should be done in a desktop, not in a submitted job. It is to take, for example, 1% of frames. 
+
+A recommended working directory is as follows:
+
+Assume your simulation trajectories (production.XXX.mdcrd) are in a folder called 'production', and the topology file is stored in the folder '../prep' (relative to 'production').
+
+Create a new folder under 'production' and go into it: 
+
+mkdir analysis
+cd analysis
+
+Create another new folder and go into it:
+
+mkdir mmpbsa
+cd mmpbsa
+
+
+Copy the complex (holo) topology file (change the filename to match your case) to the current directory:
+
+cp ../../../prep/XXX_nowat.prmtop ./
+
+Copy all files from md_scripts/analysis/mmpbsa/ on Github.
+
+Modify the cpptraj.in file to match your case (see comments in the file).
+
+Type the following commands to complete this step. Check the message shown on the screen carefully and make sure there is not errors:
+
+module load ambertools
+cpptraj -i cpptraj.in
+
+
+
+## 2. Generate receptor and ligand topology files
+
+Modify the gen_receptor_prmtop.in file to match your case (see comments in the file).
+
+Type the following commands to complete this step. Check the message shown on the screen carefully and make sure there is not errors:
+
+cpptraj -i gen_receptor_prmtop.in
+
+
+Modify the gen_ligand_prmtop.in file to match your case (see comments in the file).
+
+Type the following commands to complete this step. Check the message shown on the screen carefully and make sure there is not errors:
+
+cpptraj -i gen_ligand_prmtop.in
+
+
+## 3. Prepare for MMPBSA calculations
+
+Modify the new_mmpbsa_setup.sh file to match your case (see comments in the file)
+
+Then type the following command to run the script:
+
+bash new_mmpbsa_setup.sh
+
+
+It will generate many files and folders.
+Check carefully the message shown on the screen and make sure there is no errors. 
+
+
+## 4. Modify files 
+
+Modify the following three files to match your case (see comments in the files):
+
+  script_c.in
+  script_r.in
+  script_l.in
+
+
+## 5. (Optional) Copy files to the /work/joeyaolab/your_account/
+
+If you are not working under /work/..., you should copy the entire 'mmpbsa' folder to a place under /work/... for the following steps. This is for computational efficiency. An example command is:
+
+rsync -av ./* /work/joeyaolab/your_account/mmpbsa/
+
+
+## 6. Submit jobs
+
+IMPORTANT:  you can't submit jobs in a "Desktop". Go to HCC OnDemand. Choose 'Clusters -> >_Swan Shell Access' from the top menu.
+
+From the terminal, change directory to where you work for mmpbsa (or where you copied files to in Step 5). 
+
+
+Run the following scripts to submit jobs. 
+
+bash script_c.in
+bash script_r.in
+bash script_l.in
+
+
+Wait for the jobs to finish.
+
+Check log files once they are finished and make sure there is no errors.
+
+
+## 6. Analysis/summarizing data
+
+Run the following script to summarize data. Replace 'XXX' with a name you preferred for this calculation:
+
+bash math.sh XXX
+
+
+The final result is in a file named 'MMPBSA_XXX.mmpbsa'
+
+
+
+## 7. (Optional) Copy files back to your original working directory.
+
+If you performed Step 5, copy all files back to your initial 'mmpbsa' folder. Assuming you are under the initial folder, an example command is:
+
+rsync -av /work/joeyaolab/your_account/mmpbsa/ ./
+ 
+

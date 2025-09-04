@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Replace XXX with the total number of frames in your case. For example, if your total length of simulation is 1 microsecond, and you have taken 1% for MMPBSA calculation, the # of frames here should be 10000. No space.
+num_frames=XXX
+
+num_cores=20
+
+modulo=$((num_frames%num_cores))
+first_iteration=$((num_cores-modulo))
+increment=$(((num_frames-modulo)/num_cores))
+
+start_frame=1
+end_frame=$increment
+
+qsub_in () {
+    for i in `seq $1 $2`;do
+        mkdir complex/complex$i
+        cd complex/complex$i
+        sbatch ../../complex.sh $start_frame $end_frame
+        cd ../..
+
+        ((start_frame+=$increment))
+        ((end_frame+=$increment))
+    done
+    increment=$((increment+1))
+    first_iteration=$((first_iteration+1))
+    end_frame=$((end_frame+=1))
+}
+
+qsub_in 1 $first_iteration
+qsub_in $first_iteration $num_cores
